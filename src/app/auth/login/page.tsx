@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import SignInPage from "./components/sign-in-tab";
 import SignUpPage from "./components/sign-up-tab";
 import { Separator } from "@/components/ui/separator";
+import SocialAuthButtons from "./components/SocialAuthButtons";
 
 const LoginPage = () => {
   return (
@@ -19,13 +20,23 @@ const LoginPage = () => {
           <CardContent>
             <SignInPage />
           </CardContent>
-          <Separator />
-          <CardFooter></CardFooter>
+          <Separator aria-disabled />
+          <CardFooter className="grid grid-cols-1 gap-1.5">
+            <SocialAuthButtons />
+          </CardFooter>
         </Card>
       </TabsContent>
 
       <TabsContent value="sighup">
-        <SignUpPage />
+        <Card>
+          <CardContent>
+            <SignUpPage />
+          </CardContent>
+          <Separator aria-disabled />
+          <CardFooter className="grid grid-cols-1 gap-1.5">
+            <SocialAuthButtons />
+          </CardFooter>
+        </Card>
       </TabsContent>
     </Tabs>
   );

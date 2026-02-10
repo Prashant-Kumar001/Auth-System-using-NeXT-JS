@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,12 +12,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
+    
         <div className="h-screen flex flex-col w-full  items-center justify-center">
           {children}
         </div>
-      </body>
-    </html>
   );
 }

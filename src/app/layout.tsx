@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html className={poppins.className} lang="en" suppressHydrationWarning>
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${poppins.className}`}>
         {children}
         <Toaster richColors position="top-right" />
       </body>

@@ -10,7 +10,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -23,8 +23,7 @@ const signUpSchema = z.object({
 
 type SignUpSchemaType = z.infer<typeof signUpSchema>;
 
-const SignUpPage = () => {
-  const router = useRouter();
+const SignUpPage = ({ openEmailVerificationTab }: { openEmailVerificationTab: (email: string) => void }) => {
 
   const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
@@ -40,7 +39,7 @@ const SignUpPage = () => {
   } = form;
 
   const onSubmit = async (data: SignUpSchemaType) => {
-    await authClient.signUp.email(
+    const res = await authClient.signUp.email(
       { ...data, callbackURL: "/" },
       {
         onError: (error) => {
@@ -51,10 +50,13 @@ const SignUpPage = () => {
           console.log(account);
           toast.success("Account created successfully");
           form.reset();
-          router.push("/");
         },
       },
     );
+
+    if (res.error === null && !res.data.user.emailVerified) {
+      openEmailVerificationTab(data.email);
+    }
   };
 
   return (

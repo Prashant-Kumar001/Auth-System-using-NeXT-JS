@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,10 +10,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    
-        <div className="h-screen flex flex-col w-full  items-center justify-center">
-          {children}
-        </div>
-  );
+  return <div>{children}</div>;
 }

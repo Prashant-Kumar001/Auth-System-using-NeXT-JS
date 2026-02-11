@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -12,33 +13,37 @@ import SignInPage from "./components/sign-in-tab";
 import SignUpPage from "./components/sign-up-tab";
 import { Separator } from "@/components/ui/separator";
 import SocialAuthButtons from "./components/SocialAuthButtons";
-import { useState } from "react";
 import EmailVerification from "./components/email-verification";
 import ForgotPassword from "./components/ForgotPassword";
 
+type Tab = "signin" | "signup" | "email-verification" | "forgot-password";
+
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [selectedTab, setSelectedTab] = useState<
-    "signin" | "signup" | "email-verification" | "forgot-password"
-  >("signin");
+  const [email, setEmail] = useState<string>("");
+  const [selectedTab, setSelectedTab] = useState<Tab>("signin");
 
-
-
-  const handleEmailVerification = (email: string) => {
-    setEmail(email);
+  const handleEmailVerification = useCallback((emailArg: string) => {
+    setEmail(emailArg);
     setSelectedTab("email-verification");
-  }
+  }, []);
+
+  const handleTabChange = useCallback((value: string) => {
+    setSelectedTab(value as Tab);
+  }, []);
+
+  const showTabList = selectedTab === "signin" || selectedTab === "signup";
 
   return (
     <Tabs
       className="w-full max-w-sm"
       value={selectedTab}
-      onValueChange={(value) =>
-        setSelectedTab(value as "signin" | "signup" | "email-verification" | "forgot-password")
-      }
+      onValueChange={handleTabChange}
     >
-      {selectedTab !== "email-verification" && (
-        <TabsList className="grid w-full grid-cols-2 mb-6">
+      {showTabList && (
+        <TabsList
+          className="grid w-full grid-cols-2 mb-6"
+          aria-label="Authentication tabs"
+        >
           <TabsTrigger value="signin">Login</TabsTrigger>
           <TabsTrigger value="signup">Register</TabsTrigger>
         </TabsList>

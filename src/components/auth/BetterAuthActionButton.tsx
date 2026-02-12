@@ -1,52 +1,85 @@
 "use client";
 
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
-import { Spinner } from "../ui/spinner";
+import { useState, ButtonHTMLAttributes } from "react";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 
-type BetterAuthActionButtonProps = {
-  provider: string;
-  label: string;
-  icon?: React.ReactNode;
-  callbackURL?: string;
-  variant?: "default" | "outline" | "secondary";
-  className?: string;
-};
+type BetterAuthActionProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  action: () => Promise<any>;
+  loadingMessage?: string;
+  successMessage?: string;
+  errorMessage?: string;
+  loadingText?: string;
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost";
+  size?: "default" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg";
+  disabled?: boolean;
+  require?: boolean;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
-export const BetterAuthActionButton: React.FC<BetterAuthActionButtonProps> = ({
-  provider,
-  label,
-  icon,
-  callbackURL = "/",
-  variant = "outline",
-  className,
-}) => {
-  const [loading, setLoading] = React.useState(false);
+export function BetterAuthAction({
+  action,
+  loadingMessage,
+  successMessage,
+  errorMessage,
+  loadingText = "Please wait...",
+  children,
+  disabled,
+  size = "default",
+  require = false,
+  ...props
+}: BetterAuthActionProps) {
+  const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
+    if (loading) return;
+
+    if (require) {
+      const confirmed = window.confirm("Are you sure?");
+      if (!confirmed) return;
+    }
+
     setLoading(true);
+
+    const toastId = toast.loading(loadingMessage || "Processing...");
+
     try {
-      await authClient.signIn.social({
-        provider,
-        callbackURL,
+      const result = await action();
+
+
+      if (
+        result &&
+        typeof result === "object" &&
+        "error" in result &&
+        result.error
+      ) {
+        throw new Error(result.error.statusText || "Request failed");
+      }
+
+      toast.success(successMessage || "Success", {
+        id: toastId,
       });
-    } catch (error) {
-      console.error("Social login error:", error);
+    } catch (err) {
+      const error = err as Error;
+      toast.error(errorMessage || error.message || "Something went wrong", {
+        id: toastId,
+      });
+    } finally {
       setLoading(false);
     }
   };
 
   return (
     <Button
-      variant={variant}
-      disabled={loading}
+      size={`${size}`}
+      data-loading={loading}
+      data-variant={props.variant}
+      variant={props.variant}
+      {...props}
       onClick={handleClick}
-      className={`flex items-center gap-2 ${className ?? ""}`}
-      aria-busy={loading}
+      disabled={loading || disabled}
     >
-      {loading ? <Spinner /> : icon}
-      {loading ? `Signing in...` : label}
+      {loading ? loadingText : children}
     </Button>
   );
-};
+}

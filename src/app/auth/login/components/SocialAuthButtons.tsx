@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import {
   SUPPORTED_OAUTH_PROVIDERS,
   SUPPORTED_OAUTH_PROVIDERS_DETAILS,
-} from "@/lib/O-auth-providers";
+} from "@/lib/auth/O-auth-providers";
 import React from "react";
 
 const SocialAuthButtons = () => {

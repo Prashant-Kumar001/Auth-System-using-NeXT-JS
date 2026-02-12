@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import { useState } from "react";
 import { PasswordInput } from "../ui/password-input";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";

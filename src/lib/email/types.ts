@@ -5,15 +5,8 @@ export type EmailTemplate =
     | "CUSTOM"
     | "PASSWORD_RESET"
     | "VERIFICATION"
-    | "NEWSLETTER"
+    | "DELETE_ACCOUNT"
     | "ALERT"
-    | "REMINDER"
-    | "INVOICE"
-    | "RECEIPT"
-    | "FEEDBACK"
-    | "SURVEY"
-    | "ANNOUNCEMENT"
-    | "EVENT_INVITE"
     | "THANK_YOU"
     ;
 
@@ -25,7 +18,7 @@ export type SendEmailOptions = {
 
 
     template: EmailTemplate;
-    data?: Record<string, string | number | boolean>;
+    data: Record<string, string | number | boolean>;
 
 
 };

@@ -13,6 +13,7 @@ function Tabs({
 }: React.ComponentProps<typeof TabsPrimitive.Root>) {
   return (
     <TabsPrimitive.Root
+      suppressHydrationWarning
       data-slot="tabs"
       data-orientation={orientation}
       orientation={orientation}
@@ -48,6 +49,7 @@ function TabsList({
   VariantProps<typeof tabsListVariants>) {
   return (
     <TabsPrimitive.List
+      suppressHydrationWarning
       data-slot="tabs-list"
       data-variant={variant}
       className={cn(tabsListVariants({ variant }), className)}
@@ -82,6 +84,7 @@ function TabsContent({
 }: React.ComponentProps<typeof TabsPrimitive.Content>) {
   return (
     <TabsPrimitive.Content
+      suppressHydrationWarning
       data-slot="tabs-content"
       className={cn("flex-1 outline-none", className)}
       {...props}

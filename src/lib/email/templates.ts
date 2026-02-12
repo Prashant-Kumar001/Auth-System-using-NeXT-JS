@@ -84,7 +84,6 @@ export function getEmailTemplate(
                   If you didn’t create an account, you can safely ignore this email.
                 </p>
 
-                <!-- Divider -->
                 <hr style="border:none; border-top:1px solid #e5e7eb; margin:32px 0;" />
 
                 <p style="font-size:13px; color:#9ca3af;">
@@ -97,7 +96,6 @@ export function getEmailTemplate(
               </td>
             </tr>
 
-            <!-- Footer -->
             <tr>
               <td style="background:#f9fafb; padding:20px; text-align:center;">
                 <p style="margin:0; font-size:12px; color:#9ca3af;">
@@ -121,6 +119,141 @@ export function getEmailTemplate(
         <a href="${data.resetUrl}" style="background:#2563eb; color:#ffffff; padding:14px 28px; text-decoration:none; border-radius:6px; font-size:16px; font-weight:600; display:inline-block;">Reset Password</a>
       `;
 
+    case "DELETE_ACCOUNT":
+      return `
+        <div style="
+  background:#f4f6f8;
+  padding:40px 20px;
+  font-family:Arial, Helvetica, sans-serif;
+">
+
+  <div style="
+    max-width:600px;
+    margin:0 auto;
+    background:#ffffff;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  ">
+
+    <!-- Header -->
+    <div style="
+      background:linear-gradient(135deg,#ef4444,#dc2626);
+      color:#ffffff;
+      padding:24px;
+      text-align:center;
+    ">
+      <h2 style="margin:0;">Account Deletion Requested</h2>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:32px; color:#1f2937;">
+
+      <p style="font-size:16px;">
+        Hello <strong>${data.name || "there"}</strong>,
+      </p>
+
+      <p style="font-size:15px; line-height:1.6; color:#4b5563;">
+        We received a request to permanently delete your account. This action will remove all your data and cannot be undone.
+      </p>
+
+      <!-- Warning Box -->
+      <div style="
+        background:#fef2f2;
+        border:1px solid #fecaca;
+        padding:16px;
+        border-radius:8px;
+        margin:24px 0;
+        color:#991b1b;
+        font-size:14px;
+      ">
+        ⚠️ <strong>Warning:</strong> Once deleted, your account and all associated data will be permanently removed.
+      </div>
+
+      <p style="font-size:15px; color:#4b5563;">
+        Click the button below to confirm account deletion:
+      </p>
+
+      <!-- Button -->
+      <div style="text-align:center; margin:32px 0;">
+        <a href="${data.DeleteLink}"
+          style="
+            background:#dc2626;
+            color:#ffffff;
+            padding:14px 28px;
+            text-decoration:none;
+            border-radius:8px;
+            font-size:16px;
+            font-weight:600;
+            display:inline-block;
+          ">
+          Delete My Account
+        </a>
+      </div>
+
+      <!-- Alternate link -->
+      <p style="font-size:13px; color:#6b7280;">
+        Or copy and paste this link into your browser:
+      </p>
+
+      <p style="
+        font-size:13px;
+        word-break:break-all;
+        color:#2563eb;
+      ">
+        ${data.DeleteLink}
+      </p>
+
+      <p style="
+        font-size:14px;
+        margin-top:24px;
+        color:#6b7280;
+      ">
+        If you did not request this, you can safely ignore this email. Your account will remain active.
+      </p>
+
+      <p style="
+        font-size:14px;
+        color:#6b7280;
+      ">
+        This link may expire for security reasons.
+      </p>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="
+      background:#f9fafb;
+      padding:20px;
+      text-align:center;
+      font-size:13px;
+      color:#9ca3af;
+    ">
+      © ${new Date().getFullYear()} Your App Name. All rights reserved.
+      <br/>
+      Need help? Contact support at
+      <a href="mailto:support@yourapp.com"
+        style="color:#dc2626; text-decoration:none;">
+        support@yourapp.com
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Bottom note -->
+  <div style="
+    max-width:600px;
+    margin:16px auto 0;
+    text-align:center;
+    font-size:12px;
+    color:#9ca3af;
+  ">
+    This is an automated message. Please do not reply.
+  </div>
+
+</div>
+
+        `;
     default:
       return "";
   }

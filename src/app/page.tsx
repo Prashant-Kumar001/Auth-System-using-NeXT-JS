@@ -3,44 +3,72 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
-import { authClient } from "../lib/auth-client";
+import { authClient } from "../lib/auth/auth-client";
 import { Spinner } from "@/components/ui/spinner";
+import { Card, CardContent } from "@/components/ui/card";
+import { ModeToggle } from "@/components/Toggle-button";
 
-const page = () => {
+const Page = () => {
   const { data: session, isPending: loading } = authClient.useSession();
 
   if (loading) {
     return (
-      <div className="container flex flex-col mt-12 items-center  mx-auto w-full ">
-        <Spinner color="gray" className="w-12 h-12" />
+      <div className="min-h-screen flex items-center justify-center ">
+        <Spinner className="w-12 h-12 text-gray-600" />
       </div>
     );
   }
 
   return (
-    <div className="container w-full min-h-screen">
-      <div className="flex w-full max-w-7xl mx-auto flex-col justify-center items-center">
-        {session === null ? (
-          <div className="flex mt-12 flex-col items-center">
-            <Link href="auth/login">
-              <Button>Log in</Button>
-            </Link>
-          </div>
-        ) : (
-          <div className="mt-12  flex gap-2 items-center ">
-            <h1>Welcome to Our App</h1>
-            <p>Logged in as {session.user?.name}</p>
-            <Button
-              variant={"destructive"}
-              onClick={() => authClient.signOut()}
-            >
-              Log out
-            </Button>
-          </div>
-        )}
-      </div>
+    <div className="min-h-screen bg-linear-to-br  flex items-center justify-center px-4">
+      <Card className="w-full max-w-md shadow-xl border-none rounded-2xl">
+        <CardContent className="p-8 flex flex-col items-center text-center gap-6">
+          <ModeToggle />
+          {session === null ? ( 
+            <> 
+              <div className="space-y-2">
+                <h1 className="text-2xl font-bold">Welcome 👋</h1>
+                <p className="text-muted-foreground">
+                  Please login to continue to your dashboard.
+                </p>
+              </div>
+
+              <Link href="/auth/login" className="w-full">
+                <Button className="w-full rounded-xl">Log in</Button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <div className="space-y-2">
+                <h1 className="text-2xl font-bold">
+                  Welcome back, {session.user?.name || "User"} 🎉
+                </h1>
+                <p className="text-muted-foreground">
+                  You are successfully logged in.
+                </p>
+              </div>
+
+              <div className="flex w-full gap-3">
+                <Button
+                  variant="destructive"
+                  className="flex-1 rounded-xl"
+                  onClick={() => authClient.signOut()}
+                >
+                  Log out
+                </Button>
+
+                <Link href="/profile" className="flex-1">
+                  <Button variant="secondary" className="w-full rounded-xl">
+                    Profile
+                  </Button>
+                </Link>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
 
-export default page;
+export default Page;

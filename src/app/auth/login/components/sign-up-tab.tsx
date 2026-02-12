@@ -8,7 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 // import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
@@ -19,18 +19,26 @@ const signUpSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters"),
   email: z.string().trim().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+  favoriteNumber: z
+    .number()
+    .int("Favorite number must be an integer")
+    .positive("Favorite number must be positive"),
 });
 
 type SignUpSchemaType = z.infer<typeof signUpSchema>;
 
-const SignUpPage = ({ openEmailVerificationTab }: { openEmailVerificationTab: (email: string) => void }) => {
-
+const SignUpPage = ({
+  openEmailVerificationTab,
+}: {
+  openEmailVerificationTab: (email: string) => void;
+}) => {
   const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
+      favoriteNumber: 1,
     },
   });
 
@@ -110,6 +118,23 @@ const SignUpPage = ({ openEmailVerificationTab }: { openEmailVerificationTab: (e
                 id="password"
                 placeholder="Enter your password"
                 autoComplete="new-password"
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
+          name="favoriteNumber"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="favoriteNumber">Favorite Number</FieldLabel>
+              <Input
+                {...field}
+                id="favoriteNumber"
+                type="number"
+                placeholder="Enter your favorite number"
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}

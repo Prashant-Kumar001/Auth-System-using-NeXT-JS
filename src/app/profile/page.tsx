@@ -24,6 +24,7 @@ import ChangePasswordForm from "./components/change-password-form";
 import SessionManagement from "./components/session-management";
 import LinkedAccounts from "./components/link-accounts";
 import DangerZone from "./components/danger-zone";
+import TwoFactorAuthSystem from "./components/two-factor-auth-system";
 
 export default async function ProfilePage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -117,7 +118,7 @@ export default async function ProfilePage() {
           </TabsContent>
           <TabsContent value="security">
             <LoadingSuspense>
-              <SecurityTab email={user.email} />
+              <SecurityTab email={user.email} isTwoFactorEnabled={session.user.twoFactorEnabled ?? false} />
             </LoadingSuspense>
           </TabsContent>
           <TabsContent value="sessions">
@@ -203,7 +204,7 @@ async function SessionTab({
   );
 }
 
-async function SecurityTab({ email }: { email: string }) {
+async function SecurityTab({ email, isTwoFactorEnabled }: { email: string, isTwoFactorEnabled: boolean }) {
   const accounts = await auth.api.listUserAccounts({
     headers: await headers(),
   });
@@ -241,6 +242,30 @@ async function SecurityTab({ email }: { email: string }) {
           <CardFooter className="flex justify-end">
             <Button>Set Password</Button>
           </CardFooter>
+        </Card>
+      )}
+      {hasPassword && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Two-Factor Authentication</CardTitle>
+            <Badge
+              variant={`${isTwoFactorEnabled ? "default" : "destructive"}`}
+            >
+              {
+                isTwoFactorEnabled
+                  ? "Enabled"
+                  : "Not Enabled"
+              }
+            </Badge>
+            <CardDescription>
+              Enable two-factor authentication for added security.
+            </CardDescription>
+          </CardHeader>
+          <Separator />
+          <CardContent>
+            <TwoFactorAuthSystem isEnabled={isTwoFactorEnabled}  />
+          </CardContent>
+          <CardFooter className="flex justify-end"></CardFooter>
         </Card>
       )}
     </div>

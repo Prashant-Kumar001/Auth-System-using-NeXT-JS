@@ -7,6 +7,7 @@ import { sendVerificationEmail } from "@/app/helper/sendVerification";
 import { createAuthMiddleware } from "better-auth/api";
 import { sendWelcomeEmail } from "@/app/helper/sendWelcomeEmail";
 import { sendDeleteAccountVerification } from "@/app/helper/sendDeleteAccountVerification";
+import { twoFactor } from "better-auth/plugins";
 
 export const auth = betterAuth({
     user: {
@@ -65,7 +66,7 @@ export const auth = betterAuth({
             maxAge: 60 * 5,
         },
     },
-    plugins: [nextCookies()],
+    plugins: [nextCookies(), twoFactor()],
     database: drizzleAdapter(db, {
         provider: "pg",
     }),

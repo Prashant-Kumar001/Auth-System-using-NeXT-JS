@@ -25,6 +25,7 @@ import SessionManagement from "./components/session-management";
 import LinkedAccounts from "./components/link-accounts";
 import DangerZone from "./components/danger-zone";
 import TwoFactorAuthSystem from "./components/two-factor-auth-system";
+import Passkeys from "./components/Passkeys";
 
 export default async function ProfilePage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -118,7 +119,10 @@ export default async function ProfilePage() {
           </TabsContent>
           <TabsContent value="security">
             <LoadingSuspense>
-              <SecurityTab email={user.email} isTwoFactorEnabled={session.user.twoFactorEnabled ?? false} />
+              <SecurityTab
+                email={user.email}
+                isTwoFactorEnabled={session.user.twoFactorEnabled ?? false}
+              />
             </LoadingSuspense>
           </TabsContent>
           <TabsContent value="sessions">
@@ -204,12 +208,26 @@ async function SessionTab({
   );
 }
 
-async function SecurityTab({ email, isTwoFactorEnabled }: { email: string, isTwoFactorEnabled: boolean }) {
-  const accounts = await auth.api.listUserAccounts({
-    headers: await headers(),
-  });
+async function SecurityTab({
+  email,
+  isTwoFactorEnabled,
+}: {
+  email: string;
+  isTwoFactorEnabled: boolean;
+}) {
+  
 
-  const hasPassword = accounts.some((acc) => acc.providerId === "credential");
+
+  
+
+
+  const [passKeys, accounts] = await Promise.all([
+    auth.api.listPasskeys({ headers: await headers() }),
+    auth.api.listUserAccounts({ headers: await headers() }),
+  ])
+
+    const hasPassword = accounts.some((acc) => acc.providerId === "credential");
+
 
   return (
     <div className="space-y-4">
@@ -251,11 +269,7 @@ async function SecurityTab({ email, isTwoFactorEnabled }: { email: string, isTwo
             <Badge
               variant={`${isTwoFactorEnabled ? "default" : "destructive"}`}
             >
-              {
-                isTwoFactorEnabled
-                  ? "Enabled"
-                  : "Not Enabled"
-              }
+              {isTwoFactorEnabled ? "Enabled" : "Not Enabled"}
             </Badge>
             <CardDescription>
               Enable two-factor authentication for added security.
@@ -263,11 +277,20 @@ async function SecurityTab({ email, isTwoFactorEnabled }: { email: string, isTwo
           </CardHeader>
           <Separator />
           <CardContent>
-            <TwoFactorAuthSystem isEnabled={isTwoFactorEnabled}  />
+            <TwoFactorAuthSystem isEnabled={isTwoFactorEnabled} />
           </CardContent>
           <CardFooter className="flex justify-end"></CardFooter>
         </Card>
       )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Passkeys</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Passkeys passkeys={passKeys} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import PassKeyButton from "./PassKeyButton";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -68,60 +69,65 @@ const SignInPage = ({
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-      <FieldGroup>
-        <Controller
-          name="email"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input
-                {...field}
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                autoComplete="email"
-                aria-invalid={fieldState.invalid}
-              />
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-        <div>
+    <div className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FieldGroup>
           <Controller
-            name="password"
+            name="email"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="password">Password</FieldLabel>
-                <PasswordInput
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input
                   {...field}
-                  id="password"
-                  placeholder="Enter your password"
-                  autoComplete="current-password"
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  autoComplete="email"
                   aria-invalid={fieldState.invalid}
                 />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
           />
-          <div className="text-right mt-1">
-            <button
-              type="button"
-              className="text-sm text-muted-foreground hover:underline"
-              onClick={() => openForgotPassword()}
-            >
-              Forgot password?
-            </button>
+          <div>
+            <Controller
+              name="password"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <PasswordInput
+                    {...field}
+                    id="password"
+                    placeholder="Enter your password"
+                    autoComplete="current-password"
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.error && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <div className="text-right mt-1">
+              <button
+                type="button"
+                className="text-sm text-muted-foreground hover:underline"
+                onClick={() => openForgotPassword()}
+              >
+                Forgot password?
+              </button>
+            </div>
           </div>
-        </div>
-      </FieldGroup>
+        </FieldGroup>
 
-      <Button disabled={isSubmitting} type="submit" className="w-full mt-4">
-        {isSubmitting ? <Spinner /> : "Sign In"}
-      </Button>
-    </form>
+        <Button disabled={isSubmitting} type="submit" className="w-full mt-4">
+          {isSubmitting ? <Spinner /> : "Sign In"}
+        </Button>
+      </form>
+      {/* <PassKeyButton /> */}
+    </div>
   );
 };
 

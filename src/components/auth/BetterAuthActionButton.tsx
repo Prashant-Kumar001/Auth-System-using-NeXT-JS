@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, ButtonHTMLAttributes } from "react";
+import React, { useState, ButtonHTMLAttributes } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 
@@ -10,7 +10,7 @@ type BetterAuthActionProps = {
   loadingMessage?: string;
   successMessage?: string;
   errorMessage?: string;
-  loadingText?: string;
+  loadingText?: string | React.ReactNode;
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost";
   size?: "default" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg";
   disabled?: boolean;
@@ -45,6 +45,7 @@ export function BetterAuthAction({
 
     try {
       const result = await action();
+
 
 
       if (

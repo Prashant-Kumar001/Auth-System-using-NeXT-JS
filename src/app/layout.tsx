@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/Theme-provider";
+import Impersonate from "@/lib/auth/Impersonate";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -27,6 +28,7 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
         <Toaster richColors position="top-right" />
+        <Impersonate />
       </body>
     </html>
   );

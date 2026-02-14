@@ -2,14 +2,28 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { authClient } from "../lib/auth/auth-client";
 import { Spinner } from "@/components/ui/spinner";
 import { Card, CardContent } from "@/components/ui/card";
 import { ModeToggle } from "@/components/Toggle-button";
+import { BetterAuthAction } from "@/components/auth/BetterAuthActionButton";
 
 const Page = () => {
   const { data: session, isPending: loading } = authClient.useSession();
+  const [adminPermission, setAdminPermission] = React.useState(false);
+
+  useEffect(() => {
+    authClient.admin
+      .hasPermission({
+        permission: {
+          user: ["list"],
+        },
+      })
+      .then(({ data }) => {
+        setAdminPermission(data?.success ?? false);
+      });
+  }, []);
 
   if (loading) {
     return (
@@ -24,8 +38,8 @@ const Page = () => {
       <Card className="w-full max-w-md shadow-xl border-none rounded-2xl">
         <CardContent className="p-8 flex flex-col items-center text-center gap-6">
           <ModeToggle />
-          {session === null ? ( 
-            <> 
+          {session === null ? (
+            <>
               <div className="space-y-2">
                 <h1 className="text-2xl font-bold">Welcome 👋</h1>
                 <p className="text-muted-foreground">
@@ -49,19 +63,28 @@ const Page = () => {
               </div>
 
               <div className="flex w-full gap-3">
-                <Button
+                <BetterAuthAction
                   variant="destructive"
                   className="flex-1 rounded-xl"
-                  onClick={() => authClient.signOut()}
+                  action={() => authClient.signOut()}
+                  errorMessage="something went wrong"
+                  loadingText={<Spinner className="w-4 h-4" />}
                 >
                   Log out
-                </Button>
+                </BetterAuthAction>
 
                 <Link href="/profile" className="flex-1">
                   <Button variant="secondary" className="w-full rounded-xl">
                     Profile
                   </Button>
                 </Link>
+                {adminPermission && (
+                  <Link href="/admin" className="flex-1">
+                    <Button variant="secondary" className="w-full rounded-xl">
+                      Admin
+                    </Button>
+                  </Link>
+                )}
               </div>
             </>
           )}

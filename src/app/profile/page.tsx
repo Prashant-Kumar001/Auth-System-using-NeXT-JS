@@ -14,7 +14,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-// import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Key, LinkIcon, LoaderIcon, Shield, Trash2, User } from "lucide-react";
 import ProfileUpdateForm from "./components/profile-update-form";
@@ -44,7 +43,7 @@ export default async function ProfilePage() {
                 {user.name?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-
+            <Badge>{user.role}</Badge>
             <div>
               <CardTitle className="text-2xl">{user.name}</CardTitle>
               <CardDescription>{user.email}</CardDescription>

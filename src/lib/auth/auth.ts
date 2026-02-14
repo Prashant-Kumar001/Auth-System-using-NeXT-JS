@@ -7,10 +7,9 @@ import { sendVerificationEmail } from "@/app/helper/sendVerification";
 import { createAuthMiddleware } from "better-auth/api";
 import { sendWelcomeEmail } from "@/app/helper/sendWelcomeEmail";
 import { sendDeleteAccountVerification } from "@/app/helper/sendDeleteAccountVerification";
-import { twoFactor } from "better-auth/plugins";
-import { passkey } from "@better-auth/passkey"
-
-
+import { admin as adminPlugin, twoFactor } from "better-auth/plugins";
+import { passkey } from "@better-auth/passkey";
+import { ac, admin, user } from "./permission";
 
 export const auth = betterAuth({
     user: {
@@ -24,7 +23,7 @@ export const auth = betterAuth({
             enabled: true,
             sendDeleteAccountVerification: async ({ user, url }) => {
                 await sendDeleteAccountVerification({ user, url });
-            }
+            },
         },
         changeEmail: {
             enabled: true,
@@ -69,7 +68,18 @@ export const auth = betterAuth({
             maxAge: 60 * 5,
         },
     },
-    plugins: [nextCookies(), twoFactor(), passkey()],
+    plugins: [
+        nextCookies(),
+        twoFactor(),
+        passkey(),
+        adminPlugin({
+            ac,
+            roles: {
+                admin,
+                user,
+            },
+        }),
+    ],
     database: drizzleAdapter(db, {
         provider: "pg",
     }),

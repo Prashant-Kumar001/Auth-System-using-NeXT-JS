@@ -7,6 +7,7 @@ export type EmailTemplate =
     | "VERIFICATION"
     | "DELETE_ACCOUNT"
     | "ALERT"
+    | "ORGANIZATION_INVITATION"
     | "THANK_YOU"
     ;
 

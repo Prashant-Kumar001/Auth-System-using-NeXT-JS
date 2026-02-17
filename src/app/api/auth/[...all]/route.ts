@@ -21,7 +21,7 @@ const aj = arcjet({
     ],
 });
 
-const botSettings = { mode: "LIVE", allow: [] } satisfies BotOptions;
+const botSettings = { mode: "LIVE", allow: ["STRIPE_WEBHOOK"] } satisfies BotOptions;
 const restrictiveRateLimitSettings = {
     mode: "LIVE",
     max: 10,

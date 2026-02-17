@@ -68,7 +68,7 @@ const Page = () => {
                   className="flex-1 rounded-xl"
                   action={() => authClient.signOut()}
                   errorMessage="something went wrong"
-                  loadingText={<Spinner className="w-4 h-4" />}
+                  loadingContent={<Spinner className="w-4 h-4" />}
                 >
                   Log out
                 </BetterAuthAction>
@@ -76,6 +76,11 @@ const Page = () => {
                 <Link href="/profile" className="flex-1">
                   <Button variant="secondary" className="w-full rounded-xl">
                     Profile
+                  </Button>
+                </Link>
+                <Link href="/organizations" className="flex-1">
+                  <Button variant="secondary" className="w-full rounded-xl">
+                    Organization
                   </Button>
                 </Link>
                 {adminPermission && (

@@ -120,6 +120,7 @@ export function getEmailTemplate(
       `;
 
     case "DELETE_ACCOUNT":
+
       return `
         <div style="
   background:#f4f6f8;
@@ -254,7 +255,143 @@ export function getEmailTemplate(
 </div>
 
         `;
-    default:
+    
+    case "ORGANIZATION_INVITATION":
+      return `
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Organization Invitation</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f8;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      padding: 20px;
+      background-color: #f4f6f8;
+    }
+
+    .card {
+      max-width: 600px;
+      margin: auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #2563eb;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #111827;
+      margin-bottom: 15px;
+    }
+
+    .text {
+      font-size: 15px;
+      color: #374151;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .info-box {
+      background-color: #f9fafb;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #111827;
+    }
+
+    .info-box strong {
+      display: inline-block;
+      width: 120px;
+      color: #6b7280;
+    }
+
+    .button {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .button a {
+      background-color: #2563eb;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 13px;
+      color: #6b7280;
+      text-align: center;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card">
+
+      <div class="logo">
+        Your Organization
+      </div>
+
+      <div class="title">
+        You're invited to join an organization 🎉
+      </div>
+
+      <div class="text">
+        Hello <strong>${data.email}</strong>,<br><br>
+
+        <strong>${data.inviter}</strong> has invited you to join the organization
+        <strong>${data.organization}</strong>.
+      </div>
+
+      <div class="info-box">
+        <div><strong>Email:</strong> ${data.email}</div>
+        <div><strong>Organization:</strong> ${data.organization}</div>
+        <div><strong>Invited by:</strong> ${data.inviter}</div>
+      </div>
+
+      <div class="button">
+        <a href="${process.env.BATTER_AUTH_URL}/organizations/invites/${data.invitation}" target="_blank">
+          Accept Invitation
+        </a>
+      </div>
+
+      <div class="footer">
+        If you did not expect this invitation, you can safely ignore this email.
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
+`
+        default:
       return "";
   }
 }

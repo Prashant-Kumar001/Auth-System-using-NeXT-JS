@@ -10,8 +10,21 @@ import { sendDeleteAccountVerification } from "@/app/helper/sendDeleteAccountVer
 import { admin as adminPlugin, twoFactor } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
 import { ac, admin, user } from "./permission";
+import { organization } from "better-auth/plugins"
+import { sendInviteEmail } from "@/app/helper/sendInviteEmail";
+import { and, desc, eq } from "drizzle-orm";
+import { member } from "@/drizzle/schema";
+import { stripe } from "@better-auth/stripe"
+import Stripe from "stripe"
+import { STRIPE_PLANS } from "./stripe";
+const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2026-01-28.clover",
+})
+
+
 
 export const auth = betterAuth({
+    appName: "Better Auth",
     user: {
         additionalFields: {
             favoriteNumber: {
@@ -72,6 +85,11 @@ export const auth = betterAuth({
         nextCookies(),
         twoFactor(),
         passkey(),
+        organization({
+            sendInvitationEmail: async ({ email, organization, inviter, invitation }) => {
+                await sendInviteEmail({ email, organization, inviter: { name: inviter.user.name }, invitation });
+            }
+        }),
         adminPlugin({
             ac,
             roles: {
@@ -79,6 +97,27 @@ export const auth = betterAuth({
                 user,
             },
         }),
+        stripe({
+            stripeClient,
+            stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+            createCustomerOnSignUp: true,
+            subscription: {
+                enabled: true,
+                plans: STRIPE_PLANS,
+                authorizeReference: async ({user, referenceId, action}) => {
+                    const memberItem = await db.query.member.findFirst({
+                        where: and(
+                            eq(member.organizationId, referenceId),
+                            eq(member.userId, user.id)
+                        )
+                    })
+                    if(action == 'upgrade-subscription' || action == 'cancel-subscription' || action == 'restore-subscription') {
+                        return memberItem?.role == 'owner'
+                    }
+                    return memberItem != null
+                }
+            }
+        })
     ],
     database: drizzleAdapter(db, {
         provider: "pg",
@@ -95,5 +134,24 @@ export const auth = betterAuth({
                 }
             }
         }),
+    },
+    databaseHooks: {
+        session: {
+            create: {
+                before: async userSession => {
+                    const database = await db.query.member.findFirst({
+                        where: eq(member.userId, userSession.userId),
+                        orderBy: desc(member.createdAt),
+                        columns: { organizationId: true }
+                    })
+                    return {
+                        data: {
+                            ...userSession,
+                            activeOrganization: database?.organizationId
+                        }
+                    }
+                }
+            }
+        }
     },
 });

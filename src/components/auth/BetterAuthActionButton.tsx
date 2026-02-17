@@ -7,10 +7,10 @@ import { Button } from "../ui/button";
 type BetterAuthActionProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: () => Promise<any>;
-  loadingMessage?: string;
+  toastMessage?: string;
   successMessage?: string;
   errorMessage?: string;
-  loadingText?: string | React.ReactNode;
+  loadingContent?: string | React.ReactNode;
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost";
   size?: "default" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg";
   disabled?: boolean;
@@ -19,10 +19,10 @@ type BetterAuthActionProps = {
 
 export function BetterAuthAction({
   action,
-  loadingMessage,
+  toastMessage,
   successMessage,
   errorMessage,
-  loadingText = "Please wait...",
+  loadingContent = "Please wait...",
   children,
   disabled,
   size = "default",
@@ -41,11 +41,12 @@ export function BetterAuthAction({
 
     setLoading(true);
 
-    const toastId = toast.loading(loadingMessage || "Processing...");
+    const toastId = toast.loading(toastMessage || "Processing...");
 
     try {
       const result = await action();
 
+      console.log(result)
 
 
       if (
@@ -54,7 +55,7 @@ export function BetterAuthAction({
         "error" in result &&
         result.error
       ) {
-        throw new Error(result.error.statusText || "Request failed");
+        throw new Error(result.error.message || result.error.statusText || "Request failed");
       }
 
       toast.success(successMessage || "Success", {
@@ -80,7 +81,7 @@ export function BetterAuthAction({
       onClick={handleClick}
       disabled={loading || disabled}
     >
-      {loading ? loadingText : children}
+      {loading ? loadingContent : children}
     </Button>
   );
 }
